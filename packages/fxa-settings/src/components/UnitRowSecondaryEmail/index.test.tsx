@@ -35,6 +35,8 @@ const mockGqlError = (email: string) => ({
   request: {
     query: RESEND_SECONDARY_EMAIL_CODE_MUTATION,
     variables: { input: { email } },
+    // errorPolicy: 'all',
+    // onError: () => null,
   },
   error: new Error('Aw shucks'),
 });
@@ -249,6 +251,7 @@ describe('UnitRowSecondaryEmail', () => {
       const mocks = [mockGqlError('johndope2@example.com')];
 
       const { rerender } = render(<AlertBarRootAndContextProvider />);
+
       rerender(
         <MockedProvider {...{ mocks, cache }}>
           <AlertBarRootAndContextProvider>
@@ -263,9 +266,11 @@ describe('UnitRowSecondaryEmail', () => {
         );
       });
       expect(
+        screen.getByTestId('resend-secondary-email-code-error')
+      ).toBeInTheDocument();
+      expect(
         screen.queryByTestId('resend-secondary-email-code-success')
       ).not.toBeInTheDocument();
-
       expect(
         screen.getByTestId('resend-secondary-email-code-error').textContent
       ).toContain('Aw shucks');
