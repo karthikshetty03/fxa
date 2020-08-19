@@ -128,10 +128,15 @@ export const UnitRowSecondaryEmail = () => {
     const secondaryEmail = secondaryEmailObj.email;
     const secondaryEmailIsVerified = secondaryEmailObj.verified;
 
-    const resendSecondaryEmailCodeHandler = () => {
-      resendSecondaryEmailCode({
-        variables: { input: { email: secondaryEmail } },
-      });
+    const resendSecondaryEmailCodeHandler = async () => {
+      try {
+        await resendSecondaryEmailCode({
+          variables: { input: { email: secondaryEmail } },
+        });
+      } catch (error) {
+        // In practice this doesn't catch, but testing an error
+        // state against this triggers an obscure error here.
+      }
       revealAlertBar();
     };
 
