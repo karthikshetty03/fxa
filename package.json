@@ -79,7 +79,8 @@
       ],
       "fxa-settings": [
         "fxa-shared",
-        "fxa-react"
+        "fxa-react",
+        "fxa-content-server"
       ]
     }
   },
