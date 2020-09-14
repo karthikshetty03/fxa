@@ -30,6 +30,8 @@ const mockGqlError = () => ({
   error: new Error('Aw shucks'),
 });
 
+window.console.error = jest.fn();
+
 describe('DropDownAvatarMenu', () => {
   it('renders and toggles as expected with default values', () => {
     render(
@@ -141,7 +143,7 @@ describe('DropDownAvatarMenu', () => {
       });
 
       expect(screen.getByTestId('sign-out-error').textContent).toContain(
-        'Aw shucks'
+        'Sorry, there was a problem signing you out.'
       );
     });
   });

@@ -74,6 +74,8 @@ const sadMocks = [
   },
 ];
 
+window.console.error = jest.fn();
+
 describe('ModalVerifySession', () => {
   it('renders', async () => {
     const onDismiss = jest.fn();

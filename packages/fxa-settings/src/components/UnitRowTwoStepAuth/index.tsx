@@ -2,10 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import React, { useState } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import React from 'react';
+import { gql } from '@apollo/client';
 import LinkExternal from 'fxa-react/components/LinkExternal';
 import { useBooleanState } from 'fxa-react/lib/hooks';
+import { useAlertBar, useMutation } from '../../lib/hooks';
 import AlertBar from '../AlertBar';
 import Modal from '../Modal';
 import UnitRow from '../UnitRow';
@@ -22,31 +23,25 @@ export const DELETE_TOTP_MUTATION = gql`
 `;
 
 export const UnitRowTwoStepAuth = () => {
-  const { totp } = useAccount();
-  const { exists } = totp;
+  const alertBar = useAlertBar();
   const [modalRevealed, revealModal, hideModal] = useBooleanState();
-  const [alertBarRevealed, revealAlertBar, hideAlertBar] = useBooleanState();
-  const [errorText, setErrorText] = useState<string>();
-  const onError = (e: Error) => {
-    setErrorText(e.message);
-    hideModal();
-    revealAlertBar();
-  };
+  const { totp: { exists } } = useAccount();
 
-  const [getAccount, { accountLoading }] = useLazyAccount((error) => {
-    setErrorText(
-      'Sorry, there was a problem refreshing two-step authentication.'
-    );
-    revealAlertBar();
+  const [getAccount, { accountLoading }] = useLazyAccount(() => {
+    hideModal();
+    alertBar.success('Sorry, there was a problem refreshing two-step authentication.');
   });
 
   const [disableTwoStepAuth] = useMutation(DELETE_TOTP_MUTATION, {
     variables: { input: {} },
     onCompleted: () => {
       hideModal();
-      revealAlertBar();
+      alertBar.success('Two-step authentication disabled.');
     },
-    onError,
+    onError: () => {
+      hideModal();
+      alertBar.error('Two-step authentication could not be disabled.');
+    },
     ignoreResults: true,
     update: (cache) => {
       cache.modify({
@@ -104,7 +99,13 @@ export const UnitRowTwoStepAuth = () => {
         have access to.
       </p>
       {modalRevealed && (
-        <VerifiedSessionGuard onDismiss={hideModal} onError={onError}>
+        <VerifiedSessionGuard
+          onDismiss={hideModal}
+          onError={(error) => {
+            hideModal();
+            alertBar.error(error.message);
+          }}
+        >
           <Modal
             onDismiss={hideModal}
             onConfirm={disableTwoStepAuth}
@@ -134,18 +135,9 @@ export const UnitRowTwoStepAuth = () => {
           </Modal>
         </VerifiedSessionGuard>
       )}
-      {alertBarRevealed && (
-        <AlertBar
-          onDismiss={hideAlertBar}
-          type={errorText ? 'error' : 'success'}
-        >
-          {errorText ? (
-            <p data-testid="delete-totp-error">Error text TBD. {errorText}</p>
-          ) : (
-            <p data-testid="delete-totp-success">
-              Two-step authentication disabled
-            </p>
-          )}
+      {alertBar.visible && (
+        <AlertBar onDismiss={alertBar.hide} type={alertBar.type}>
+          <p data-testid={`delete-totp-${alertBar.type}`}>{alertBar.content}</p>
         </AlertBar>
       )}
     </UnitRow>

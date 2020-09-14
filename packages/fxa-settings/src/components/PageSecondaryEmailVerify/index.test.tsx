@@ -39,6 +39,8 @@ const mockLocation = ({
   state: { email: 'johndope@example.com' },
 } as unknown) as WindowLocation;
 
+window.console.error = jest.fn();
+
 describe('PageSecondaryEmailVerify', () => {
   it('renders as expected', () => {
     renderWithRouter(
