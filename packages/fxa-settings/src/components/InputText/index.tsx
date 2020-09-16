@@ -10,6 +10,7 @@ import React, {
   RefObject,
 } from 'react';
 import classNames from 'classnames';
+import { Tooltip } from '../Tooltip';
 
 export type InputTextProps = {
   defaultValue?: string | number;
@@ -59,8 +60,7 @@ export const InputText = ({
 
   return (
     <label
-      className={`flex items-center rounded transition-all duration-100 ease-in-out border tooltip
-      ${errorText ? 'tooltip-showing' : ''}
+      className={`flex items-center rounded transition-all duration-100 ease-in-out border relative
       ${
         focussed ? 'border-blue-400 shadow-input-blue-focus' : 'border-grey-200'
       }
@@ -95,19 +95,7 @@ export const InputText = ({
           }}
         />
       </span>
-
-      {errorText && (
-        <span
-          data-testid="error-tooltip"
-          className={
-            errorTooltipClass
-              ? errorTooltipClass
-              : 'tooltip-text tooltip-showing bg-red-200 p-3 -mt-20 rounded text-sm'
-          }
-        >
-          {errorText}
-        </span>
-      )}
+      {errorText && <Tooltip type="error" className="-mt-24" msg={errorText} />}
       {children}
     </label>
   );

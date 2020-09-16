@@ -5,7 +5,6 @@
 @import './animations.css';
 @import './ctas.scss';
 @import './unit-row.scss';
-@import './tooltip.scss';
 @import './drop-down-menu.scss';
 @tailwind base;
 @tailwind components;
@@ -37,4 +36,28 @@ body {
   &:active {
     @apply transition duration-150;
   }
+}
+
+.tooltip-default:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+  border-color: #3D3D3D transparent transparent transparent;
+  top: 35px;
+  left: 43%;
+}
+
+.tooltip-error:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+  border-color: #E22850 transparent transparent transparent;
+  top: 35px;
+  left: 43%;
 }
