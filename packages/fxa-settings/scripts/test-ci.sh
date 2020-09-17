@@ -5,8 +5,6 @@ cd "$DIR/.."
 
 mkdir -p config
 
-yarn lint
-
 cd ../../
 mkdir -p ~/.pm2/logs
 mkdir -p artifacts/tests
