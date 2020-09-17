@@ -18559,6 +18559,7 @@ fsevents@^1.2.7:
     fxa-react: "workspace:*"
     fxa-shared: "workspace:*"
     graphql: ^14.6.0
+    intern: ^4.8.7
     node-sass: ^4.14.0
     npm-run-all: ^4.1.5
     pm2: ^4.4.1
